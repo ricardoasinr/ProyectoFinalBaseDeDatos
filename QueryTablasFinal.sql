@@ -1,21 +1,21 @@
 CREATE TABLE Modelos (
   CodModelo nchar(10) NOT NULL,
   Marca varchar(20) NOT NULL,
-  Modelo char(10) not null,
-  NroPuertas int NOT NULL,
-  Cilindradas int NOT NULL,
-  NroRuedas INT NOT NULL,
+  Modelo varchar(10) not null,
+  NroPuertas varchar NOT NULL,
+  Cilindradas varchar NOT NULL,
+  NroRuedas varchar NOT NULL,
   Procedencia varchar(50) NOT NULL,
-  CantPasajeros INT NOT NULL,
+  CantPasajeros varchar NOT NULL,
   CONSTRAINT PK_Modelos PRIMARY KEY (CodModelo)
 );
 CREATE TABLE Concesionarias(
 NIT_CON nchar(10) NOT NULL,
 --NroVenta char(10) NOT NULL,
-TelefonoCon nchar(10) NOT NULL,
-NombreCon nchar(10) NOT NULL,
-DireccionCon int NOT NULL,
-EmailCon char NOT NULL,
+TelefonoCon varchar(10) NOT NULL,
+NombreCon varchar(10) NOT NULL,
+DireccionCon varchar NOT NULL,
+EmailCon varchar NOT NULL,
  CONSTRAINT PK_Concesionarias PRIMARY KEY (NIT_CON),
 -- CONSTRAINT FK_Ventas FOREIGN KEY(NroVenta) REFERENCES NroVenta (NroVenta)
  );
@@ -25,7 +25,7 @@ CREATE TABLE Equipos (
   precio decimal(10,2) not NULL,
   CONSTRAINT PK_equipo PRIMARY KEY (codequipo)
 );
-CREATE TABLE tipoequipo (
+CREATE TABLE TipoEquipo (
   CodModelo nchar(10) NOT NULL,
   Codequipo nchar NOT NULL,
   Tipoequipo varchar(50) NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE Series(
   CONSTRAINT FK_seriequipo FOREIGN KEY (codequipo) REFERENCES Equipos (codequipo),
   CONSTRAINT FK_autoequipo FOREIGN KEY (nrochasis) REFERENCES Automoviles (nrochasis)
 );
-CREATE TABLE ServicioOfi (
+CREATE TABLE ServicioOficial (
   NITSO nchar (10) not null,
   NIT_CON nchar(10) NOT NULL,
   NombreSO varchar (50) not null,
@@ -73,17 +73,17 @@ CREATE TABLE Vendedores (
   EmailV varchar (50) not null,
   constraint PK_Vendedores primary key (codvendedor),
   constraint FK_Vendedores_Concesionaria foreign key (NIT_CON) references Concesionarias (NIT_CON),
-  constraint FK_Vendedores_ServOficial foreign key (NITSO) references ServicioOfi (NITSO)
+  constraint FK_Vendedores_ServOficial foreign key (NITSO) references ServicioOficial (NITSO)
 );
 CREATE TABLE Clientes (
   CI_Clientes nchar(10) NOT NULL,
   Factura varchar(10) NOT NULL,
   NombreClie varchar(50) NOT NULL,
-  TelefonoCli nchar(10) NOT NULL,
+  TelefonoCli varchar(10) NOT NULL,
   DireccionCli varchar(100) NOT NULL,
   CONSTRAINT PK_Clientes PRIMARY KEY (CI_Clientes),
 );
-CREATE TABLE VehiculosVend (
+CREATE TABLE VehiculosVendidos (
   Matricula nchar(10) NOT NULL,
   CodModelo nchar(10) NOT NULL,
   CI_Clientes nchar(10) NOT NULL,
@@ -122,7 +122,7 @@ TelefonoMec varchar(10) NOT NULL,
   DireccionMec varchar(100) NOT NULL,
 Especialidad varchar(20) not null,
 constraint PK_Mecanicos primary key (CodMecanico),
-  CONSTRAINT FK_ServicioOfi foreign key (NITSO) references ServicioOfi
+  CONSTRAINT FK_ServicioOfi foreign key (NITSO) references ServicioOficial
 );
 create table HojadeParte
 (
@@ -133,10 +133,10 @@ FechaIngreso date not null,
 HoraIngreso time not null,
 Manodeobra money not null,
 constraint PK_HojadeParte primary key (CodHoja),
-constraint FK_HojadeParte_VehiculosVend foreign key (Matricula) references VehiculosVend,
+constraint FK_HojadeParte_VehiculosVend foreign key (Matricula) references VehiculosVendidos,
 constraint FK_HojadeParte_Mecanicos foreign key (CodMecanico) references Mecanicos,
 );
-create table Repuestos_Insumos_Materiales
+create table RepuestosInsumosMateriales
 (
 CodRep_Ins_Mat nchar(10) not null,
 CodHoja nchar(10) not null,
@@ -153,7 +153,7 @@ CodRep_Ins_Mat nchar(10) not null,
 Cantidad nchar(10) not null,
 constraint PK_Detalle primary key (CodDetalle),
 constraint FK_Detalle_HojadeParte foreign key (CodHoja) references HojadeParte,
-constraint FK_Detalle_Repuestos_Insumos_Materiales foreign key (CodRep_Ins_Mat) references Repuestos_Insumos_Materiales,
+constraint FK_Detalle_Repuestos_Insumos_Materiales foreign key (CodRep_Ins_Mat) references RepuestosInsumosMateriales,
 );
 create table Facturas
 (
