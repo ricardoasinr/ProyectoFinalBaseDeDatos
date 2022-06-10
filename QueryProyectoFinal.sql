@@ -33,17 +33,6 @@ CREATE TABLE TipoEquipo (
   constraint fk_Tipo_Modelo foreign key (codmodelo) references Modelos (codmodelo),
   constraint fk_Tipo_Equipo foreign key (codequipo) references Equipos (codequipo)
 );
-CREATE TABLE Automoviles(
-NroChasis nchar(10) NOT NULL,
-NIT_CON nchar(10) NOT NULL,
-CodModelo nchar(10) NOT NULL,
-FechaFabri date NOT NULL,
-Color varchar(20) NOT NULL,
-Estado varchar(10),
- CONSTRAINT PK_Automoviles PRIMARY KEY (NroChasis),
- CONSTRAINT FK_Concesionarias FOREIGN KEY (NIT_CON) REFERENCES Concesionarias,
-  CONSTRAINT FK_Modelos FOREIGN KEY (CodModelo) REFERENCES Modelos
-);
 CREATE TABLE Series(
   codequipo varchar(10) NOT NULL,
   nrochasis nchar(10) not NULL,
@@ -51,6 +40,18 @@ CREATE TABLE Series(
   CONSTRAINT PK_serie PRIMARY KEY (codequipo, nrochasis),
   CONSTRAINT FK_seriequipo FOREIGN KEY (codequipo) REFERENCES Equipos (codequipo),
   CONSTRAINT FK_autoequipo FOREIGN KEY (nrochasis) REFERENCES Automoviles (nrochasis)
+);
+
+CREATE TABLE Automoviles(
+NroChasis nchar(10) NOT NULL,
+NIT_CON nchar(10) NOT NULL,
+CodModelo nchar(10) NOT NULL,
+FechaFabri date NOT NULL,
+E varchar(20) NOT NULL,
+Estado varchar(10),
+ CONSTRAINT PK_Automoviles PRIMARY KEY (NroChasis),
+ CONSTRAINT FK_Concesionarias FOREIGN KEY (NIT_CON) REFERENCES Concesionarias,
+  CONSTRAINT FK_Modelos FOREIGN KEY (CodModelo) REFERENCES Modelos
 );
 CREATE TABLE ServicioOficial (
   NITSO nchar (10) not null,
@@ -83,35 +84,6 @@ CREATE TABLE Clientes (
   DireccionCli varchar(100) NOT NULL,
   CONSTRAINT PK_Clientes PRIMARY KEY (CI_Clientes),
 );
-CREATE TABLE VehiculosVendidos (
-  Matricula nchar(10) NOT NULL,
-  CodModelo nchar(10) NOT NULL,
-  CI_Clientes nchar(10) NOT NULL,
-  FechaFabri date NOT NULL,
-  Color varchar(15) NOT NULL,
-  CONSTRAINT PK_VehiculosVend PRIMARY KEY (Matricula),
-  CONSTRAINT FK_Modeloss foreign key (CodModelo) references Modelos,
-  CONSTRAINT FK_Clientes foreign key (CI_Clientes) references Clientes
-
-);
-CREATE TABLE Ventas (
-  Factura nchar(10) NOT NULL,
-  CodVendedor nchar (10) not null,
-  NIT_CON nchar(10) NOT NULL,
-  CI_Clientes nchar(10) NOT NULL,
-  NroChasis nchar(10) NOT NULL,
-  FechaVenta date NOT NULL,
-  FechaEntrega date NOT NULL,
-  Lugar varchar(50) NOT NULL,
-  PrecioVenta decimal(10,2) not NULL,
-  ModoPago varchar(20) NOT NULL,
-  CONSTRAINT PK_ventas PRIMARY KEY (Factura),
-  CONSTRAINT FK_vendedores FOREIGN KEY (CodVendedor) REFERENCES Vendedores (CodVendedor),
-  CONSTRAINT FK_concesionariass foreign key (NIT_CON) references Concesionarias,
-  CONSTRAINT FK_clientess foreign key (CI_Clientes) references Clientes,
-  CONSTRAINT FK_Automoviles foreign key (NroChasis) references Automoviles
-
-  );
 CREATE TABLE Mecanicos(
 CodMecanico nchar(10) not null,
   NITSO nchar (10) not null,
@@ -165,10 +137,42 @@ constraint FK_Facturas_Mecanicos foreign key (CodMecanico) references Mecanicos,
 constraint FK_Facturas_Clientes foreign key (CI_Clientes) references Clientes,
 );
 
+CREATE TABLE VehiculosVendidos (
+  Matricula nchar(10) NOT NULL,
+  CodModelo nchar(10) NOT NULL,
+  CI_Clientes nchar(10) NOT NULL,
+  FechaFabri date NOT NULL,
+  Color varchar(15) NOT NULL,
+  CONSTRAINT PK_VehiculosVend PRIMARY KEY (Matricula),
+  CONSTRAINT FK_Modeloss foreign key (CodModelo) references Modelos,
+  CONSTRAINT FK_Clientes foreign key (CI_Clientes) references Clientes
+
+);
+CREATE TABLE Ventas (
+  Factura nchar(10) NOT NULL,
+  CodVendedor nchar (10) not null,
+  NIT_CON nchar(10) NOT NULL,
+  CI_Clientes nchar(10) NOT NULL,
+  NroChasis nchar(10) NOT NULL,
+  FechaVenta date NOT NULL,
+  FechaEntrega date NOT NULL,
+  Lugar varchar(50) NOT NULL,
+  PrecioVenta decimal(10,2) not NULL,
+  ModoPago varchar(20) NOT NULL,
+  CONSTRAINT PK_ventas PRIMARY KEY (Factura),
+  CONSTRAINT FK_vendedores FOREIGN KEY (CodVendedor) REFERENCES Vendedores (CodVendedor),
+  CONSTRAINT FK_concesionariass foreign key (NIT_CON) references Concesionarias,
+  CONSTRAINT FK_clientess foreign key (CI_Clientes) references Clientes,
+  CONSTRAINT FK_Automoviles foreign key (NroChasis) references Automoviles
+
+  );
+
+
+
 
 insert into Concesionarias values ('45456','Ricardo Automotors','75003138','Av. Banzer 5to Anillo', 'info@ricardoautomotors.com');
 insert into Concesionarias values ('45457','Bolivian Automotors','75643223','Av. Banzer 4to Anillo', 'info@bolivianautomotors.com');
-insert into Concesionarias values ('45458','Imcruz Bolivia','800121800','Av. Cristóbal de Mendoza # 164', 'info@imcruzbolivia.com');
+insert into Concesionarias values ('45458','Imcruz Bolivia','800121800','Av. Cristóbal de Mendoza #164', 'info@imcruzbolivia.com');
 insert into ServicioOficial values ('22222','45456','Monica Service','Av. Banzer 5to Anillo', '7452256','servicio@oficialMonica.com','Taller Monica');
 insert into ServicioOficial values ('22223','45457','Ricardo Service','Av. Banzer 4to Anillo', '75003138','servicio@oficialRicardo.com','Taller Ricardo');
 
@@ -194,11 +198,12 @@ insert into Series values ('1990','8003','00003');
 
 insert into Vendedores values ('555','45456','22222','Leonardo Arabe Castedo','75638430','Av. Banzer 6to Anillo','leonardoac2000@gmail.com');
 insert into Vendedores values ('551','45456','22222','Mariana Shantal Arabe','79934808','Urubo Condominio Casa del Camba','marianashantala@gmail.com');
-
+insert into Vendedores values ('552','45457','22223','Ramiro Fernandez','72934367','Av Los Cusis','ramiroventas@gmail.com');
 
 --Añadir más mecanicos
 insert into Mecanicos values ('M001','22222','Jose Mario', 'Santa Cruz','69168609','Av Paragua Calle las petas','Caja de cambios');
-
+insert into Mecanicos values ('M002','22223','Francesca', 'Antelo','78004552','Av Busch 4to Anillo','Cambio de llantas');
+insert into Mecanicos values ('M003','22222','Ulises', 'Rider','70868065','Av Santos Dumont 4to Anillo','Tuberias');
 --Añadir más clientes
 insert into Clientes values ('8127786','8127786','Ricardo Asin','75003138','Av Banzer 5to Anillo');
 
@@ -214,18 +219,20 @@ insert into RepuestosInsumosMateriales values ('R278','H893','Bujia','400')
 
 
 insert into Detalle values ('D001','H893','R278','1');
-create table Facturas(
-CodFactura nchar(10) not null,
-CodHoja nchar(10) not null,
-CodMecanico nchar(10) not null,
-CI_Clientes nchar(10) NOT NULL,
-NombreRIM varchar(1000) not null,
-PrecioMO money not null,
-PrecioTOT money not null,
-constraint PK_Facturas primary key (CodFactura),
-constraint FK_Facturas_HojadeParte foreign key (CodHoja) references HojadeParte,
-constraint FK_Facturas_Mecanicos foreign key (CodMecanico) references Mecanicos,
-constraint FK_Facturas_Clientes foreign key (CI_Clientes) references Clientes,
-);
+
 
 insert into Facturas values ('FR0001','H893','M001','8127786','Bujia T783','450','780')
+
+select * from Mecanicos
+
+create procedure ListaVendedores
+as
+SELECT [CodVendedor]
+      ,[NIT_CON]
+      ,[nitso]
+      ,[NombreV]
+      ,[TelefonoV]
+      ,[EmailV]
+  FROM [master].[dbo].[Vendedores]
+
+execute ListaVendedores
