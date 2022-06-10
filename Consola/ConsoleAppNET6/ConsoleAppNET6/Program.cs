@@ -28,6 +28,9 @@ catch (Exception e)
     Environment.Exit(0);
 }
 
+//RegisterSellers(sqlConnection, ref data);
+//Console.ReadLine();
+
 int a = MenuPrincipal();
 switch (a)
 {
@@ -45,6 +48,27 @@ switch (a)
     
 }
 
+static int MenuPrincipal()
+{
+    int op;
+    do
+    {
+        Console.Clear();
+        Console.WriteLine("------------------------------");
+        Console.WriteLine("1. Administrador");
+        Console.WriteLine("2. Registro");
+        Console.WriteLine("3. Ver informacion");
+        Console.WriteLine("------------------------------");
+        
+        op = Convert.ToInt32(Console.ReadLine());
+        Console.ReadLine();
+        if (op > 3 || op <= 0)
+        {
+            Console.WriteLine("Ingrese un numero valido");
+        }
+    } while (op >3 || op <= 0);
+    return op;
+}
 
 static void Atras()
 {
@@ -113,27 +137,7 @@ static void MenuAdministrador(SqlConnection sqlConnection, ref SqlDataReader dat
     } while (op != 0);
 }
 
-static int MenuPrincipal()
-{
-    int op;
-    do
-    {
-        Console.Clear();
-        Console.WriteLine("------------------------------");
-        Console.WriteLine("1. Administrador");
-        Console.WriteLine("2. Registro");
-        Console.WriteLine("3. Ver informacion");
-        Console.WriteLine("------------------------------");
-        
-        op = Convert.ToInt32(Console.ReadLine());
-        Console.ReadLine();
-        if (op > 3 || op <= 0)
-        {
-            Console.WriteLine("Ingrese un numero valido");
-        }
-    } while (op >3 || op <= 0);
-    return op;
-}
+
 
 static void MenuInformacion(SqlConnection sqlConnection, ref SqlDataReader data)
 {
@@ -410,6 +414,16 @@ static void GetAllSales(SqlConnection sqlConnection, ref SqlDataReader data)
     }
     data.Close();
 }
+
+static void RegisterSellers(SqlConnection sqlConnection, ref SqlDataReader data)
+{
+    Console.WriteLine("Registro de vendedores: ");
+    Console.WriteLine("Nombre: ");
+    string nombre = Console.ReadLine();
+    Console.WriteLine(nombre);
+
+}
+
 
 
 static void ProcedureListaVendedores(SqlConnection sqlConnection, ref SqlDataReader data) 
