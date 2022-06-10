@@ -1,6 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
 
-// MAIN
 string connString = @"Server=tcp:localhost,1433;
                                 Initial Catalog=master;
                                 Persist Security Info=True;
@@ -28,47 +27,8 @@ catch (Exception e)
     Environment.Exit(0);
 }
 
-//RegisterSellers(sqlConnection, ref data);
-//Console.ReadLine();
-
-int a = MenuPrincipal();
-switch (a)
-{
-    case 1:
-        MenuAdministrador(sqlConnection, ref data);
-        break;
-    case 2:
-        Console.WriteLine("Menu tanto");
-        break;
-    case 3:
-        MenuInformacion(sqlConnection, ref data);
-        break;
-    default:
-        break;
-    
-}
-
-static int MenuPrincipal()
-{
-    int op;
-    do
-    {
-        Console.Clear();
-        Console.WriteLine("------------------------------");
-        Console.WriteLine("1. Administrador");
-        Console.WriteLine("2. Registro");
-        Console.WriteLine("3. Ver informacion");
-        Console.WriteLine("------------------------------");
-        
-        op = Convert.ToInt32(Console.ReadLine());
-        Console.ReadLine();
-        if (op > 3 || op <= 0)
-        {
-            Console.WriteLine("Ingrese un numero valido");
-        }
-    } while (op >3 || op <= 0);
-    return op;
-}
+//Menu(sqlConnection, ref data);
+ProcedureRegistroClientes(sqlConnection, ref data);
 
 static void Atras()
 {
@@ -77,7 +37,7 @@ static void Atras()
     Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 }
 
-static void MenuAdministrador(SqlConnection sqlConnection, ref SqlDataReader data)
+static void Menu(SqlConnection sqlConnection, ref SqlDataReader data)
 {
     int op;
     do
@@ -92,8 +52,11 @@ static void MenuAdministrador(SqlConnection sqlConnection, ref SqlDataReader dat
         Console.WriteLine("6. Repuestos");
         Console.WriteLine("7. Detalles");
         Console.WriteLine("8. Hojas de parte");
+        Console.Write("9. ");
         Console.WriteLine("------------------------------------");
         Console.WriteLine("Registros: ");
+        
+        
         Console.WriteLine("------------------------------------");
         Console.WriteLine("0. Salir");
         Console.WriteLine("------------------------------------");
@@ -136,55 +99,6 @@ static void MenuAdministrador(SqlConnection sqlConnection, ref SqlDataReader dat
         Console.ReadLine();
     } while (op != 0);
 }
-
-
-
-static void MenuInformacion(SqlConnection sqlConnection, ref SqlDataReader data)
-{
-    int op;
-    do
-    {
-        Console.Clear();
-        Console.WriteLine("--------------Informacion----------------");
-        Console.WriteLine("1. Listado de clientes");
-        Console.WriteLine("2. Listado de vehiculos");
-        Console.WriteLine("3. Listado de vendedores");
-        Console.WriteLine("4. Listado de mecanicos");
-        Console.WriteLine("5. Vehiculos vendidos");
-        Console.WriteLine("0. Salir");
-        Console.WriteLine("------------------------------------");
-        op = Convert.ToInt32(Console.ReadLine());
-
-        switch (op)
-        {
-            case 1:
-                GetAllClients(sqlConnection, ref data);
-                break;
-            case 2:
-                GetAllCars(sqlConnection, ref data);
-                break;
-            case 3:
-                
-                ProcedureListaVendedores(sqlConnection, ref data);
-                break;
-            case 4:
-                GetAllMechanics(sqlConnection, ref data);
-                break;
-            case 5:
-                GetAllSales(sqlConnection, ref data);
-                break;
-            case 0:
-                Console.WriteLine("Terminado...");
-                break;
-            default:
-                Console.WriteLine("Opcion invalida");
-                break;
-        }
-        Console.ReadLine();
-    } while (op != 0);
-}
-
-//static void Registros(SqlConnection sqlConnection, ref SqlDataReader data);
 
 static void GetAllClients(SqlConnection sqlConnection, ref SqlDataReader data)
 {
@@ -424,8 +338,6 @@ static void RegisterSellers(SqlConnection sqlConnection, ref SqlDataReader data)
 
 }
 
-
-
 static void ProcedureListaVendedores(SqlConnection sqlConnection, ref SqlDataReader data) 
 {
     Console.WriteLine("Ejecutamos un procedimiento almacenado sin parametros: ");
@@ -447,4 +359,40 @@ static void ProcedureListaVendedores(SqlConnection sqlConnection, ref SqlDataRea
 
     Console.WriteLine("*________Procedimiento Lista Vendedores ejecutada________*");
     Console.ReadKey();
+}
+
+static void ProcedureRegistroClientes(SqlConnection sqlConnection, ref SqlDataReader data)
+{
+    Console.WriteLine("Registro de clientes: ");
+    Console.WriteLine("Carnet: ");
+    string carnet = Console.ReadLine();
+   
+    Console.WriteLine("Factura: ");
+    string factura = Console.ReadLine();
+   
+    
+    Console.WriteLine("Nombre: ");
+    string nombre = Console.ReadLine();
+    
+    Console.WriteLine("Telefono: ");
+    string telef = Console.ReadLine();
+    
+    Console.WriteLine("Direccion: ");
+    string Direccion = Console.ReadLine();
+    
+ 
+    
+     var sqlCommand = new SqlCommand($"exec RegistroCliente @p_CI_Clientes = '{carnet}', " +
+                                     $"@p_Factura  = '{factura}'," +
+                                     $"@p_NombreClie  = '{nombre}'," +
+                                     $"@p_TelefonoCli  = '{telef}'," +
+                                     $"@p_DireccionCli = '{Direccion}';", sqlConnection);
+     data = sqlCommand.ExecuteReader();
+     data.Close();
+ 
+     
+     Console.ReadKey();
+     
+
+
 }
