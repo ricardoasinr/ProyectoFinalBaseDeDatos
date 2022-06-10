@@ -2,6 +2,7 @@
 using System;
 using Microsoft.Data.SqlClient;
 
+
 namespace ConsoleApp
 {
     class Program
@@ -74,7 +75,7 @@ namespace ConsoleApp
             ejecutor = comando.ExecuteReader();
             while (ejecutor.Read())
             {
-                Console.WriteLine(ejecutor["CodVendedor"] + " | " + ejecutor["NIT_CON"] + " | " + ejecutor["nitso"] + " | " + ejecutor["NombreV"] + " | " + ejecutor["TelefonoV"] + " | " + ejecutor["Email"]);
+                Console.WriteLine(ejecutor["CodVendedor"] + " | " + ejecutor["NIT_CON"] + " | " + ejecutor["nitso"] + " | " + ejecutor["NombreV"] + " | " + ejecutor["TelefonoV"] + " | " + ejecutor["EmailV"]);
             }
             Console.WriteLine("**_______________________**");
             Console.ReadKey();

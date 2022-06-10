@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppNET6", "ConsoleAppNET6\ConsoleAppNET6.csproj", "{509FF8A7-CCD0-4F5B-A0F2-401448042AC1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{509FF8A7-CCD0-4F5B-A0F2-401448042AC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{509FF8A7-CCD0-4F5B-A0F2-401448042AC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{509FF8A7-CCD0-4F5B-A0F2-401448042AC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{509FF8A7-CCD0-4F5B-A0F2-401448042AC1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
