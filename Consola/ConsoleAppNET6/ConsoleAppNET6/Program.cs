@@ -28,40 +28,90 @@ catch (Exception e)
 }
 
 //Menu(sqlConnection, ref data);
-ProcedureRegistroClientes(sqlConnection, ref data);
+//ProcedureRegistroClientes(sqlConnection, ref data);
+//ProcedureRegistroAutos(sqlConnection, ref data);
+int m = MenuTaller(sqlConnection, ref data);
+if (m == 1)
+{
+    
+    Console.WriteLine("Iniciando registro");
+    String id = ProcedureRegistroClientes(sqlConnection, ref data);
+    Console.Write("\nCargando mecanicos...");
+    Console.ReadKey();
+    GetAllMechanics(sqlConnection, ref data);
+    Console.Write("Seleccione un mecanico \nDigite el id del mecanico: ");
+    String idMecanico = Console.ReadLine();
+    Console.ReadKey();
+    //Asignar mecanico
+    Console.WriteLine("\t");
+    Console.WriteLine("------------------------------------");
+    Console.Write("Mecanico: ");
+    Console.WriteLine(idMecanico);
+    Console.WriteLine("------------------------------------");
+    
+    Console.WriteLine("Rellene de acuerdo a las necesidades del cliente");
+    //Registro de Hoja de parte
+    
+    
+
+
+
+
+}
+
+if (m == 2)
+{
+    Console.Write("\nDigite el carnet del cliente: ");
+    String CiCliente = Console.ReadLine();
+    GetAllClient(sqlConnection, ref data, CiCliente);
+    Console.Write("\nCargando mecanicos...");
+    Console.ReadKey();
+    GetAllMechanics(sqlConnection, ref data);
+   
+    Console.Write("Seleccione un mecanico \nDigite el id del mecanico: ");
+    String idMecanico = Console.ReadLine();
+    Console.ReadKey();
+    //Asignar mecanico
+    Console.WriteLine("\t");
+    Console.WriteLine("------------------------------------");
+    Console.Write("Mecanico: ");
+    Console.WriteLine(idMecanico);
+    Console.WriteLine("------------------------------------");
+    
+    Console.WriteLine("Rellene de acuerdo a las necesidades del cliente");
+    //Registro de Hoja de parte
+    
+    
+    
+}
+
 
 static void Atras()
 {
-    Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     Console.WriteLine("Toque cualquier tecla para volver atras");
-    Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 }
 
-static void Menu(SqlConnection sqlConnection, ref SqlDataReader data)
+static int MenuTaller(SqlConnection sqlConnection, ref SqlDataReader data)
 {
     int op;
+    int i;
     do
     {
         Console.Clear();
         Console.WriteLine("--------------Taller----------------");
         Console.WriteLine("1. Listado de clientes");
         Console.WriteLine("2. Listado de vehiculos");
-        Console.WriteLine("3. Listado de vendedores");
+        Console.WriteLine("3. Listado de Repuestos");
         Console.WriteLine("4. Listado de mecanicos");
-        Console.WriteLine("5. Facturas");
-        Console.WriteLine("6. Repuestos");
-        Console.WriteLine("7. Detalles");
-        Console.WriteLine("8. Hojas de parte");
-        Console.Write("9. ");
+        Console.WriteLine("5. Listado de Facturas");
         Console.WriteLine("------------------------------------");
-        Console.WriteLine("Registros: ");
-        
-        
+        Console.WriteLine("6. Iniciar registro de reparacion");
         Console.WriteLine("------------------------------------");
         Console.WriteLine("0. Salir");
         Console.WriteLine("------------------------------------");
         op = Convert.ToInt32(Console.ReadLine());
-
         switch (op)
         {
             case 1:
@@ -70,9 +120,8 @@ static void Menu(SqlConnection sqlConnection, ref SqlDataReader data)
             case 2:
                 GetAllCars(sqlConnection, ref data);
                 break;
-            case 3:
-                
-                ProcedureListaVendedores(sqlConnection, ref data);
+            case 3: 
+                GetAllSpareParts(sqlConnection, ref data);
                 break;
             case 4:
                 GetAllMechanics(sqlConnection, ref data);
@@ -81,13 +130,8 @@ static void Menu(SqlConnection sqlConnection, ref SqlDataReader data)
                 GetAllReceipts(sqlConnection, ref data);
                 break;
             case 6:
-                GetAllSpareParts(sqlConnection, ref data);
-                break;
-            case 7:
-                GetAllDetails(sqlConnection, ref data);
-                break;
-            case 8:
-                GetAllDataSheets(sqlConnection, ref data);
+                i = IniciarReparacion(sqlConnection, ref data);
+                return i;
                 break;
             case 0:
                 Console.WriteLine("Terminado...");
@@ -98,6 +142,8 @@ static void Menu(SqlConnection sqlConnection, ref SqlDataReader data)
         }
         Console.ReadLine();
     } while (op != 0);
+
+    return 0;
 }
 
 static void GetAllClients(SqlConnection sqlConnection, ref SqlDataReader data)
@@ -111,20 +157,49 @@ static void GetAllClients(SqlConnection sqlConnection, ref SqlDataReader data)
         Console.WriteLine("----------Clientes Registrados----------");
         while (data.Read())
         {
-            
+
             Console.WriteLine($"CI: {data["CI_Clientes"]} \n" +
                               $"Nombre: {data["NombreClie"]}\n" +
                               $"Direccion: {data["DireccionCli"]}\n" +
                               $"Telfono: {data["TelefonoCli"]}\n" +
                               $"Factura: {data["Factura"]}");
             Console.WriteLine("---------------------------------------");
-            Atras();
+            
         }
-        
+
     }
+    //Atras();
     else
     {
         Console.WriteLine("No existen clientes");
+    }
+    data.Close();
+}
+
+static void GetAllClient(SqlConnection sqlConnection, ref SqlDataReader data, String CI)
+{
+    var sqlCommand = new SqlCommand($"select * from Clientes WHERE  CI_Clientes = '{CI}';", sqlConnection);
+    data = sqlCommand.ExecuteReader();
+
+    if (data.HasRows)
+    {
+        Console.WriteLine("\n");
+        Console.WriteLine("----------Clientes Registrados----------");
+        while (data.Read())
+        {
+
+            Console.WriteLine($"CI: {data["CI_Clientes"]} \n" +
+                              $"Nombre: {data["NombreClie"]}\n" +
+                              $"Direccion: {data["DireccionCli"]}\n" +
+                              $"Telfono: {data["TelefonoCli"]}\n" +
+                              $"Factura: {data["Factura"]}");
+            Console.WriteLine("---------------------------------------");
+        }
+
+    }
+    else
+    {
+        Console.WriteLine("No se encuentra el cliente");
     }
     data.Close();
 }
@@ -139,20 +214,21 @@ static void GetAllCars(SqlConnection sqlConnection, ref SqlDataReader data)
         Console.WriteLine("----------------Vehiculos---------------");
         while (data.Read())
         {
-            
+
             Console.WriteLine($"Numero de chasis: {data["NroChasis"]}\n" +
                               $"NIT Concesionaria: {data["NIT_CON"]}\n" +
                               $"Codigo Modelo: {data["CodModelo"]}\n" +
                               $"Fecha: {data["FechaFabri"]} \n" +
-                              $"Color: {data["Color"]}\n"+
+                              $"Color: {data["Color"]}\n" +
                               $"Estado: {data["Estado"]}");
 
             Console.WriteLine("----------------------------------------");
-            
+
         }
         Atras();
-        
-    } else
+
+    }
+    else
     {
         Console.WriteLine("No hay vehiculos registrados");
     }
@@ -169,18 +245,19 @@ static void GetAllDataSheets(SqlConnection sqlConnection, ref SqlDataReader data
         Console.WriteLine("----------------Hoja de parte---------------");
         while (data.Read())
         {
-            
+
             Console.WriteLine($"Codigo: {data["CodHoja"]}\n" +
-                              $"Matricula: {data["Matricula"]}\n" + 
-                              $"Fecha de ingreso: {data["FechaIngreso"]}"+
-                              $" Hora: {data["HoraIngreso"]}\n"+
+                              $"Matricula: {data["Matricula"]}\n" +
+                              $"Fecha de ingreso: {data["FechaIngreso"]}" +
+                              $" Hora: {data["HoraIngreso"]}\n" +
                               $"Mecanico encargado: {data["CodMecanico"]}\n" +
                               $"Costo de mano de obra: {data["Manodeobra"]}");
             Console.WriteLine("--------------------------------------------");
         }
         Atras();
-        
-    } else
+
+    }
+    else
     {
         Console.WriteLine("No existen datos");
     }
@@ -198,21 +275,21 @@ static void GetAllMechanics(SqlConnection sqlConnection, ref SqlDataReader data)
         Console.WriteLine("---------------------Mecanicos--------------------");
         while (data.Read())
         {
-            
+
             Console.WriteLine($"Codigo: {data["CodMecanico"]}\n" +
                               $"NIT Servicio oficial: {data["NITSO"]}\n" +
-                              $"Especialidad: {data["Especialidad"]}\n"+
-                              $"Nombre: {data["NombreMec"]}"+
-                              $" {data["ApellidoMec"]} \n"+
+                              $"Especialidad: {data["Especialidad"]}\n" +
+                              $"Nombre: {data["NombreMec"]}" +
+                              $" {data["ApellidoMec"]} \n" +
                               $"Telefono: {data["TelefonoMec"]}");
             Console.WriteLine("-------------------------------------------------");
-            
+
         }
         Atras();
     }
     else
     {
-        
+
         Console.WriteLine("No existen datos");
     }
     data.Close();
@@ -241,7 +318,7 @@ static void GetAllReceipts(SqlConnection sqlConnection, ref SqlDataReader data)
     }
     else
     {
-        
+
         Console.WriteLine("No hay facturas registradas");
     }
     data.Close();
@@ -268,10 +345,29 @@ static void GetAllSpareParts(SqlConnection sqlConnection, ref SqlDataReader data
     }
     else
     {
-        
+
         Console.WriteLine("No hay datos registrados");
     }
     data.Close();
+}
+
+static int IniciarReparacion(SqlConnection sqlConnection, ref SqlDataReader data)
+{
+    int op;
+    do
+    {
+    Console.Clear();
+    Console.WriteLine("--------------Reparacion----------------");
+    Console.WriteLine("Cliente nuevo?");
+    Console.WriteLine("1. Si \t 2.No");
+    Console.WriteLine("0. Salir");
+    Console.WriteLine("------------------------------------");
+    op = Convert.ToInt32(Console.ReadLine());
+    Console.ReadLine();
+    } while (op < 0 || op > 2);
+
+    return op;
+
 }
 
 static void GetAllDetails(SqlConnection sqlConnection, ref SqlDataReader data)
@@ -295,7 +391,7 @@ static void GetAllDetails(SqlConnection sqlConnection, ref SqlDataReader data)
     }
     else
     {
-        
+
         Console.WriteLine("No existen detalles");
     }
     data.Close();
@@ -323,7 +419,7 @@ static void GetAllSales(SqlConnection sqlConnection, ref SqlDataReader data)
     }
     else
     {
-        
+
         Console.WriteLine("No existen detalles");
     }
     data.Close();
@@ -338,7 +434,7 @@ static void RegisterSellers(SqlConnection sqlConnection, ref SqlDataReader data)
 
 }
 
-static void ProcedureListaVendedores(SqlConnection sqlConnection, ref SqlDataReader data) 
+static void ProcedureListaVendedores(SqlConnection sqlConnection, ref SqlDataReader data)
 {
     Console.WriteLine("Ejecutamos un procedimiento almacenado sin parametros: ");
     var sqlCommand = new SqlCommand("execute ListaVendedores", sqlConnection);
@@ -357,42 +453,141 @@ static void ProcedureListaVendedores(SqlConnection sqlConnection, ref SqlDataRea
     }
     data.Close();
 
-    Console.WriteLine("*________Procedimiento Lista Vendedores ejecutada________*");
+    Console.WriteLine("__Procedimiento Lista Vendedores ejecutada__");
     Console.ReadKey();
 }
 
-static void ProcedureRegistroClientes(SqlConnection sqlConnection, ref SqlDataReader data)
+static string ProcedureRegistroClientes(SqlConnection sqlConnection, ref SqlDataReader data)
 {
-    Console.WriteLine("Registro de clientes: ");
-    Console.WriteLine("Carnet: ");
+    Console.WriteLine("---------------------Registro de Clientes--------------------");
+    Console.Write("Carnet: ");
     string carnet = Console.ReadLine();
-   
-    Console.WriteLine("Factura: ");
-    string factura = Console.ReadLine();
-   
-    
-    Console.WriteLine("Nombre: ");
-    string nombre = Console.ReadLine();
-    
-    Console.WriteLine("Telefono: ");
-    string telef = Console.ReadLine();
-    
-    Console.WriteLine("Direccion: ");
-    string Direccion = Console.ReadLine();
-    
- 
-    
-     var sqlCommand = new SqlCommand($"exec RegistroCliente @p_CI_Clientes = '{carnet}', " +
-                                     $"@p_Factura  = '{factura}'," +
-                                     $"@p_NombreClie  = '{nombre}'," +
-                                     $"@p_TelefonoCli  = '{telef}'," +
-                                     $"@p_DireccionCli = '{Direccion}';", sqlConnection);
-     data = sqlCommand.ExecuteReader();
-     data.Close();
- 
-     
-     Console.ReadKey();
-     
 
+    Console.Write("Factura: ");
+    string factura = Console.ReadLine();
+
+
+    Console.Write("Nombre: ");
+    string nombre = Console.ReadLine();
+
+    Console.Write("Telefono: ");
+    string telef = Console.ReadLine();
+
+    Console.Write("Direccion: ");
+    string Direccion = Console.ReadLine();
+
+
+
+    var sqlCommand = new SqlCommand($"exec RegistroCliente @p_CI_Clientes = '{carnet}', " +
+                                    $"@p_Factura  = '{factura}'," +
+                                    $"@p_NombreClie  = '{nombre}'," +
+                                    $"@p_TelefonoCli  = '{telef}'," +
+                                    $"@p_DireccionCli = '{Direccion}';", sqlConnection);
+    data = sqlCommand.ExecuteReader();
+    data.Close();
+
+
+    Console.ReadKey();
+
+    return carnet;
+
+}
+
+static void ProcedureRegistroAutos(SqlConnection sqlConnection, ref SqlDataReader data)
+{
+    Console.WriteLine("---------------------Registro del vehiculo del cliente--------------------");
+    Console.Write("Matricula: ");
+    string matricula = Console.ReadLine();
+
+    Console.Write("Codigo Modelo: ");
+    string codmodelo = Console.ReadLine();
+
+
+    Console.Write("Carnet del cliente: ");
+    string cicliente = Console.ReadLine();
+
+    Console.Write("Fecha de fabricacion del vehiculo(ej: 20201103): AAAAMMDD ");
+    string fechafab = Console.ReadLine();
+
+    Console.Write("Color: ");
+    string color = Console.ReadLine();
+
+
+    var sqlCommand = new SqlCommand($"exec RegistroVehiculo @p_Matricula = '{matricula}', " +
+                                    $"@p_CodModelo  = '{codmodelo}'," +
+                                    $"@p_CI_Clientes  = '{cicliente}'," +
+                                    $"@p_FechaFabri  = '{fechafab}'," +
+                                    $"@p_Color = '{color}';", sqlConnection);
+    data = sqlCommand.ExecuteReader();
+    data.Close();
+
+
+    Console.ReadKey();
+
+
+
+}
+
+static void ProcedureMecanicos(SqlConnection sqlConnection, ref SqlDataReader data)
+{
+    Console.WriteLine("---------------------Seleccion de mecanico--------------------");
+
+    var sqlCommand = new SqlCommand("select Disponibilidad from Mecanicos", sqlConnection);
+    data = sqlCommand.ExecuteReader();
+
+    
+
+}
+
+static void ProcedureFacturas(SqlConnection sqlConnection, ref SqlDataReader data)
+{
+    Console.WriteLine("---------------------FACTURA--------------------");
+    Console.Write("Codigo de factura: ");
+    string codfactura = Console.ReadLine();
+
+    Console.Write("Codigo hoja de parte: ");
+    string codhoja = Console.ReadLine();
+
+
+    Console.Write("Codigo del mecanico: ");
+    string codmecanico = Console.ReadLine();
+
+    Console.Write("carnet del cliente ");
+    string cicliente = Console.ReadLine();
+
+    Console.Write("Nombre del repuesto/insumo/material: ");
+    string nombrerim = Console.ReadLine();
+
+    Console.Write("Precio: ");
+    string preciorim = Console.ReadLine();
+
+    Console.Write("Precio mano de obra: ");
+    string preciomo = Console.ReadLine();
+
+
+    Console.Write("Precio total: ");
+    string preciotot = Console.ReadLine();
+    /*
+    Console.WriteLine("Precio total con el IVA:");
+    string precioiva = Console.ReadLine();
+    */
+
+
+    /*var sqlCommand = new SqlCommand($"exec RegistroFactura @p_CodFactura = '{codfactura}', " +
+                                    $"@p_CodHoja  = '{codhoja}'," +
+                                    $"@p_CodMecanico  = '{codmecanico}'," +
+                                    $"@p_CI_Clientes  = '{cicliente}'," +
+                                    $"@p_NombreRIM = '{nombrerim}'," +
+                                    $"@p_PrecioRIM  = '{preciorim}'," +
+                                    $"@p_PrecioMO  = '{cicliente}'," +
+                                    $"@p_PrecioTOT  = '{preciotot}'," +
+                                    $"@p_PrecioIVA = '{precioiva}';" , sqlConnection);
+    data = sqlCommand.ExecuteReader();
+    data.Close();
+
+
+    Console.ReadKey();
+
+    */
 
 }
